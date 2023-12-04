@@ -1,0 +1,12 @@
+Polimorfismo:
+Classes abstratas: DispositivoEletronico e ServoMotor métodos virtuais puros: ligar, desligar, escreverAngulo. Classes derivadas: ArduinoServoMotor e FechaduraDigital.
+
+Conceitos de SOLID: Cada classe tem uma única função, em FechaduraDigital para controle de fechadura e ArduinoServoMotor para controle do servo motor.
+
+Classes Abstratas ou Virtuais:
+Foi implementada pelo 'DispositivoEletronicoeServoMotor`.
+
+Métodos Destrutores
+Implementados: ArduinoServoMotor e FechaduraDigital.
+
+Métodos privados e protegidos: escreverAngulo é privado, pois é acessado apenas dentro da própria classe.
