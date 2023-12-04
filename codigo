@@ -1,0 +1,101 @@
+#include <Servo.h>
+#include <iostream>
+
+enum EstadoFechadura { TRANCADA, DESTRANCADA };
+
+// Classe abstrata para dispositivos eletrÃ´nicos
+class DispositivoEletronico {
+public:
+    virtual void ligar() const = 0;
+    virtual void desligar() const = 0;
+    virtual ~DispositivoEletronico() {} // Destrutor virtual
+};
+
+// Classe abstrata para o comportamento do servo motor
+class ServoMotor {
+public:
+    virtual void escreverAngulo(int angle) const = 0;
+    virtual ~ServoMotor() {} // Destrutor virtual
+};
+
+// ImplementaÃ§Ã£o concreta para o Arduino Servo Motor
+class ArduinoServoMotor : public ServoMotor {
+public:
+    ArduinoServoMotor(int pin);
+    void escreverAngulo(int angle) const override;
+    ~ArduinoServoMotor(); // MÃ©todo destrutor
+private:
+    Servo servo;
+    const int pin;
+};
+
+// ImplementaÃ§Ã£o da classe FechaduraDigital, que herda de DispositivoEletronico
+class FechaduraDigital : public DispositivoEletronico {
+public:
+    FechaduraDigital(ServoMotor& servoMotor, int unlockAngle, int lockAngle);
+    ~FechaduraDigital(); // MÃ©todo destrutor
+
+    void destrancar();
+    void trancar();
+    EstadoFechadura getEstado() const;
+
+private:
+    ServoMotor& servoMotor;
+    const int unlockAngle;
+    const int lockAngle;
+    EstadoFechadura estado;
+};
+
+// ImplementaÃ§Ã£o do ArduinoServoMotor
+ArduinoServoMotor::ArduinoServoMotor(int pin) : pin(pin) {
+    // InicializaÃ§Ãµes especÃ­ficas do servo motor, se necessÃ¡rio
+}
+
+void ArduinoServoMotor::escreverAngulo(int angle) const {
+    // LÃ³gica para escrever o Ã¢ngulo no servo motor
+}
+
+ArduinoServoMotor::~ArduinoServoMotor() {
+    // Libera recursos associados ao servo motor, se necessÃ¡rio
+}
+
+// ImplementaÃ§Ã£o da FechaduraDigital
+FechaduraDigital::FechaduraDigital(ServoMotor& servoMotor, int unlockAngle, int lockAngle)
+    : servoMotor(servoMotor), unlockAngle(unlockAngle), lockAngle(lockAngle), estado(TRANCADA) {
+    // InicializaÃ§Ãµes especÃ­ficas da fechadura digital, se necessÃ¡rio
+}
+
+void FechaduraDigital::destrancar() {
+    if (estado == TRANCADA) {
+        servoMotor.escreverAngulo(unlockAngle);
+        delay(1000);
+        estado = DESTRANCADA;
+    }
+}
+
+void FechaduraDigital::trancar() {
+    if (estado == DESTRANCADA) {
+        servoMotor.escreverAngulo(lockAngle);
+        delay(1000);
+        estado = TRANCADA;
+    }
+}
+
+EstadoFechadura FechaduraDigital::getEstado() const {
+    return estado;
+}
+
+FechaduraDigital::~FechaduraDigital() {
+    // Libera recursos associados Ã  fechadura digital, se necessÃ¡rio
+}
+
+int main() {
+    // Exemplo de uso das classes
+    ArduinoServoMotor servoMotor(9); // Supondo que o servo motor estÃ¡ conectado ao pino 9
+    FechaduraDigital fechadura(servoMotor, 90, 0);
+
+    fechadura.destrancar();
+    fechadura.trancar();
+
+    return 0;
+}
